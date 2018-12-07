@@ -11,7 +11,7 @@ import { AuthService } from '../auth.service';
 export class SigninComponent implements OnInit {
   @ViewChild("form") form: NgForm;
 
-  constructor(private authGuard: AuthGuardService, private authService: AuthService) { }
+  constructor(private authGuard: AuthGuardService, public authService: AuthService) { }
 
   ngOnInit() {
     this.form.reset();

@@ -16,7 +16,7 @@ export class HeaderComponent {
   constructor(
     private serverSer: ServerService, 
     private recipeSer: RecipeService,
-    private authService: AuthService) {}
+    public authService: AuthService) {}
   
   onSave() {
     this.serverSer.saveData()

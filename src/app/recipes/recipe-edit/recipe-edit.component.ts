@@ -21,6 +21,10 @@ export class RecipeEditComponent implements OnInit {
     private rService: RecipeService,
     private router: Router) { }
 
+    get ingredients() {
+      return <FormArray>this.recipeForm.get("ingredients")
+    }
+
   ngOnInit() {
     this.route.params.subscribe(
       (params: Params) => {
@@ -28,7 +32,8 @@ export class RecipeEditComponent implements OnInit {
         this.editMode = params["id"] != null;
         this.initForm();
       }
-    )
+    );
+    console.log(this.recipeForm.get("ingredients"))
   }
 
   onSave() {
