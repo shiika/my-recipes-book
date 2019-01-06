@@ -1,9 +1,10 @@
 import {Component} from '@angular/core';
-import { Response } from "@angular/http";
 import { ServerService } from 'src/app/server.service';
 import { RecipeService } from 'src/app/recipes/recipe.service';
 import { AuthService } from 'src/app/auth/auth.service';
 import { Recipe } from 'src/app/recipes/shared/recipe.model';
+import { HttpErrorResponse } from '@angular/common/http';
+// import { HttpEvent, HttpEventType } from '@angular/common/http';
 
 @Component ({
   selector: 'app-header',
@@ -21,8 +22,19 @@ export class HeaderComponent {
   onSave() {
     this.serverSer.saveData()
       .subscribe(
-        (response: Response) => {
-          console.log(response)
+        //                      HttpEvents
+        // (response: HttpEvent<Object>) => {
+        //   console.log(response.type === HttpEventType.Sent);
+        //   // Data object we recieve is holding type, this type refers to a specific HttpEvent
+        //   // Sent => {
+        //   // type: 0
+        //   // }
+        //   // Response => {
+        //   // type: 4
+        //   // }
+        //   }
+        (response) => {
+          console.log(response);
         }
       )
   }
@@ -47,11 +59,11 @@ export class HeaderComponent {
 
     this.serverSer.fetchData()
       .subscribe(
-        (recipes: Recipe[]) => {
+        (recipes) => {
           this.recipeSer.updateRecipes(recipes);
           console.log(recipes)
         },
-        (err: any) => console.log(`I think ${err}`)
+        (err: HttpErrorResponse) => console.log(`I think ${err}`)
       )
   }
 
