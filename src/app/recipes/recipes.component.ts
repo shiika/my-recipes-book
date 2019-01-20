@@ -3,6 +3,10 @@ import { Recipe } from './shared/recipe.model';
 import { RecipeService } from './recipe.service';
 import { AuthService } from '../auth/auth.service';
 import { Router } from '@angular/router';
+import { Store } from '@ngrx/store';
+
+import * as AppReducer from '../store/app.reducers';
+import * as AuthReducer from '../auth/store/auth.reducers';
 
 @Component({
   selector: 'app-recipes',
@@ -11,13 +15,12 @@ import { Router } from '@angular/router';
 })
 export class RecipesComponent implements OnInit {
   bigRecipe: Recipe;
-  @Input() loadedFeature: string;
-  
 
   constructor(
     private recipeService: RecipeService, 
     private authService: AuthService,
-    private router: Router) { }
+    private router: Router,
+    private store: Store<AppReducer.AppState>) { }
 
   ngOnInit() {
     this.recipeService.itemSelected.subscribe(
@@ -26,9 +29,15 @@ export class RecipesComponent implements OnInit {
       }
     );
 
-    if (!this.authService.isAuthenticated()) {
-      this.router.navigate(['signin'])
-    }
+    this.store.select('auth')
+      .subscribe(
+        (authState: AuthReducer.State) => {
+          if (!authState.authed) {
+            
+          }
+        }
+      )
+
 
   }
 

@@ -1,6 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { RecipeService } from './recipes/recipe.service';
-import { ShoppingListService } from './shopping-list/shopping-list.service';
 
 import * as firebase from 'firebase';
 import { AuthService } from './auth/auth.service';
@@ -24,8 +23,6 @@ export class AppComponent implements OnInit {
     // if (!this.authService.isAuthenticated()) {
     //   this.router.navigate(['signin'])
     // }
-
-    console.log(this.authService.isAuthenticated())
 
     // console.log(this.authService.isAuthenticated());
   }

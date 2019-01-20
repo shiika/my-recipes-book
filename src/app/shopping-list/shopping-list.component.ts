@@ -1,46 +1,42 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
-import { Ingredient } from '../recipes/shared/ingredients.model';
-import { ShoppingListService } from './shopping-list.service';
-import { Subscription, Subject } from 'rxjs';
+import { Observable } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
 import { Router } from '@angular/router';
+import { Store} from '@ngrx/store';
+import * as ShoppingListActions from './store/shopping-list.actions';
+import * as ShoppingListReducers from "./store/shopping-list.reducers";
+import * as AppReducer from '../store/app.reducers';
+
+import { map } from 'rxjs/operators';
 @Component({
   selector: 'app-shopping-list',
   templateUrl: './shopping-list.component.html',
   styleUrls: ['./shopping-list.component.css']
 })
-export class ShoppingListComponent implements OnInit, OnDestroy {
-  ingredients: Ingredient[];
-  ingredientSubscription: Subscription;
+export class ShoppingListComponent implements OnInit {
+  shoppingListState: Observable<ShoppingListReducers.State>;
 
   shown: boolean = true;
 
   constructor(
-    private shoppingList: ShoppingListService,
     private authService: AuthService,
-    private router: Router) {}
+    private router: Router,
+    private store: Store<AppReducer.AppState>) {}
 
   ngOnInit() {
-    this.ingredients = this.shoppingList.getIngredients();
+    this.shoppingListState = this.store.select('shoppingList')
 
-    this.ingredientSubscription = this.shoppingList.ingredientObserv.subscribe(
-      (ingredients: Ingredient[]) => {
-        this.ingredients = ingredients;
-      }
-    );
+    // this.ingredientSubscription = this.shoppingList.ingredientObserv.subscribe(
+    //   (ingredients: Ingredient[]) => {
+    //     this.ingredients = ingredients;
+    //   }
+    // );
 
-    if (!this.authService.isAuthenticated()) {
-      this.router.navigate(['signin']);
-    }
-
-  }
-
-  ngOnDestroy() {
-    this.ingredientSubscription.unsubscribe();
   }
 
   onEditItem(index: number) {
-    this.shoppingList.startedEditing.next(index);
+    // this.shoppingList.startedEditing.next(index);
+    this.store.dispatch(new ShoppingListActions.StartEdit(index))
   }
 }

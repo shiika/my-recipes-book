@@ -1,7 +1,11 @@
 import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
+import { Store } from "@ngrx/store";
 
-import { AuthService } from "../../auth/auth.service";
+import * as AppReducers from "../../store/app.reducers";
+import * as AuthActions from "../../auth/store/auth.actions";
+import * as AuthReducers from "../../auth/store/auth.reducers";
+import { map } from 'rxjs/operators';
 
 @Component({
     selector: "app-home",
@@ -11,12 +15,22 @@ import { AuthService } from "../../auth/auth.service";
 
 export class HomeComponent implements OnInit {
     
-    constructor(private authService: AuthService, private router: Router) {}
+    constructor(private router: Router, private store: Store<AppReducers.AppState>) {}
 
     ngOnInit() {
-        if (!this.authService.isAuthenticated()) {
-            this.authService.authed = false;
-            this.router.navigate(["signin"])
-        }
+        this.store.select("auth")
+            .subscribe(
+                (authState: AuthReducers.State) => {
+                    if (!authState.authed) {
+                        this.router.navigate(["signin"]);
+                        this.store.select('auth').pipe(
+                            map(
+                                (authState) => console.log(authState)
+                            )
+                        )
+                    }
+
+                }
+            )
     }
 }

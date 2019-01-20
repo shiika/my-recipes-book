@@ -1,9 +1,13 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
 import { ServerService } from 'src/app/server.service';
 import { RecipeService } from 'src/app/recipes/recipe.service';
 import { AuthService } from 'src/app/auth/auth.service';
-import { Recipe } from 'src/app/recipes/shared/recipe.model';
-import { HttpErrorResponse } from '@angular/common/http';
+import * as AppReducers from "../../store/app.reducers";
+import * as AuthReducers from "../../auth/store/auth.reducers";
+import * as AuthActions from "../../auth/store/auth.actions";
 // import { HttpEvent, HttpEventType } from '@angular/common/http';
 
 @Component ({
@@ -12,12 +16,18 @@ import { HttpErrorResponse } from '@angular/common/http';
   styleUrls: ['./header.component.css']
 })
 
-export class HeaderComponent {
+export class HeaderComponent implements OnInit {
+  authenticated: Observable<AuthReducers.State>;
 
   constructor(
     private serverSer: ServerService, 
     private recipeSer: RecipeService,
-    public authService: AuthService) {}
+    public authService: AuthService,
+    private store: Store<AppReducers.AppState>) {}
+
+  ngOnInit() {
+    this.authenticated = this.store.select('auth');
+  }
   
   onSave() {
     this.serverSer.saveData()
@@ -61,14 +71,12 @@ export class HeaderComponent {
       .subscribe(
         (recipes) => {
           this.recipeSer.updateRecipes(recipes);
-          console.log(recipes)
         },
         (err: HttpErrorResponse) => console.log(`I think ${err}`)
       )
   }
 
-  onNavigate() {
-    this.authService.authed = false;
-    console.log(this.authService.authed);
-  }
+  // onNavigate() {
+  //   this.authService.authed = false;
+  // }
 }
